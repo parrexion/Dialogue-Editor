@@ -86,8 +86,12 @@ public class DialogueListPanel extends JPanel implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		JTextField tField = (JTextField) e.getSource();
 		String text = tField.getText();
-		if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE)
-			text += e.getKeyChar();
+		if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
+			int pos = tField.getCaretPosition();
+			String text1 = text.substring(0, pos);
+			String text2 = text.substring(pos);
+			text = text1 + e.getKeyChar() + text2;
+		}
 		dialogueDialogues.dialogues[0].name = text;
 		data.updateFrame(dialogueDialogues.dialogues[0], 0);
 	}
