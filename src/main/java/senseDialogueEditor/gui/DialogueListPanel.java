@@ -22,14 +22,12 @@ import senseDialogueEditor.dialogueEditor.DialogueDialogues;
 
 public class DialogueListPanel extends JPanel implements KeyListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public JTable dialogueTable;
 	public DialogueListTable data;
 	public DialogueDialogues dialogueDialogues;
+	
 	
 	public DialogueListPanel(ListSelectionListener listlis, DialogueDialogues dialogues) {
 		super();
@@ -50,7 +48,6 @@ public class DialogueListPanel extends JPanel implements KeyListener {
 		
 		return panel;
 	}
-	
 	
 	private JScrollPane createDialogueTable(){
 

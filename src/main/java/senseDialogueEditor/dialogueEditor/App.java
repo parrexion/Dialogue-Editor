@@ -24,17 +24,13 @@ public class App {
 	
     public static void main( String[] args ) {
     	
-    	
 //    	TemporaryDialogue();
 //    	printFile();
-    	    	
     	
 //    	chooseFile();
     	readFile();
 
-    	
     	new GUI(dialogue);
-    	
     }
     
     public static void printFile() {
@@ -113,6 +109,7 @@ public class App {
     }
     
 
+	@SuppressWarnings("unused")
 	private static void TemporaryDialogue(){
 
     	dialogue = new DialogueDialogues(1);

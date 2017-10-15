@@ -21,17 +21,23 @@ import javax.swing.table.TableColumnModel;
 
 import senseDialogueEditor.dialogueEditor.DialogueLines;
 import senseDialogueEditor.dialogueEditor.DialogueScene;
+import senseDialogueEditor.extra.SmartScroller;
 
+/**
+ * Panel containing the table of all the frames of the current dialogue.
+ * Also contains the buttons for creating and saving dialogues.
+ *
+ * @author Parrexion
+ */
 public class BottomPanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public JTable lines;
 	public FrameLineTable table;
 	public DialogueLines lineData;
+	private JScrollPane scrollPane;
+	
 	
 	public BottomPanel(ActionListener listner, ListSelectionListener listlis, DialogueLines data) {
 		super();
@@ -48,12 +54,15 @@ public class BottomPanel extends JPanel {
 
 	public void AddFrame(DialogueScene scene){
 		lineData.AddAction(scene);
+		validate();
 	}
 	public void InsertFrame(int index, DialogueScene scene){
 		lineData.InsertAction(index,scene);
+		validate();
 	}
 	public void RemoveFrame(int index){
 		lineData.RemoveAction(index);
+		validate();
 	}
 	
 	private JPanel createBottomPanelSaveLoad(ActionListener listner){
@@ -117,9 +126,11 @@ public class BottomPanel extends JPanel {
 		model.getColumn(3).setMinWidth(150);
 		model.getColumn(4).setPreferredWidth(5000);
 		
-		JScrollPane scroll = new JScrollPane(lines);
+		scrollPane = new JScrollPane(lines);
+		new SmartScroller(scrollPane);
+
 		lines.setFillsViewportHeight(true);
-		return scroll;
+		return scrollPane;
 	}
 	
 }

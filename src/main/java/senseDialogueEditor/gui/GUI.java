@@ -18,6 +18,7 @@ import senseDialogueEditor.data.Backgrounds;
 import senseDialogueEditor.data.Persons;
 import senseDialogueEditor.dialogueEditor.App;
 import senseDialogueEditor.dialogueEditor.DialogueDialogues;
+import senseDialogueEditor.dialogueEditor.DialogueLines;
 import senseDialogueEditor.dialogueEditor.DialogueScene;
 
 public class GUI implements ActionListener, KeyListener, ListSelectionListener {
@@ -34,6 +35,7 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	private RightPanel rightPanel;
 	private MiddlePanel middlePanel;
 	private DialogueListPanel dialoguePanel;
+	
 	private DialogueDialogues dialogues;
 	private int dialogueIndex;
 
@@ -61,6 +63,7 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 		sidePanel.add(dialoguePanel, BorderLayout.CENTER);
 
+		loadDialogue();
 		loadFrame(rightPanel.frameNr);
 
 		frame.add(mainPanel, BorderLayout.CENTER);
@@ -108,34 +111,18 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			int person = Integer.valueOf(values[1]);
 			JComboBox<String> combo2 = (JComboBox<String>) e.getSource();
 			int character = combo2.getSelectedIndex() - 1;
-			int lastPose = dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[person];
-			middlePanel.setPersonImage(person, character, lastPose);
-			if (person == middlePanel.talkingIndex || middlePanel.talkingIndex == -1 || middlePanel.talkingIndex == 4)
-				SetRadio(middlePanel.talkingIndex, false, currFrame);
-			if (!loading) {
-				dialogues.lines[dialogueIndex].dataList.get(currFrame).positions[person] = character;
-				if (character < 0)
-					dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[person] = -1;
-				bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
-			}
+			setPerson(person, character, currFrame);
 			break;
 
 		case "pose":
 			if (middlePanel.manipulating)
 				return;
+			int index = Integer.valueOf(values[1]);
 			JComboBox<String> combo3 = (JComboBox<String>) e.getSource();
-			int index = combo3.getSelectedIndex();
+			int pose = combo3.getSelectedIndex();
 			if (combo3.getSelectedItem().toString() == "")
-				index = -1;
-			middlePanel.setPersonPose(Integer.valueOf(values[1]), index);
-			if (Integer.valueOf(values[1]) == middlePanel.talkingIndex || middlePanel.talkingIndex == -1
-					|| middlePanel.talkingIndex == 4)
-				SetRadio(middlePanel.talkingIndex, false, currFrame);
-			if (!loading) {
-				dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[Integer.valueOf(values[1])] = combo3
-						.getSelectedIndex();
-				bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
-			}
+				pose = -1;
+			setPose(index, pose, currFrame);
 			break;
 
 		case "loadframe":
@@ -245,6 +232,38 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
 		}
 	}
+	
+	/**
+	 * Set the character for the person at index position.
+	 * @param index
+	 * @param character
+	 * @param currFrame
+	 */
+	private void setPerson(int index, int character, int currFrame) {
+		int lastPose = dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[index];
+		middlePanel.setPersonImage(index, character, lastPose);
+		if (index == middlePanel.talkingIndex || middlePanel.talkingIndex == -1 || middlePanel.talkingIndex == 4)
+			SetRadio(middlePanel.talkingIndex, false, currFrame);
+		
+		if (loading)
+			return;
+		
+		dialogues.lines[dialogueIndex].dataList.get(currFrame).positions[index] = character;
+		if (character < 0)
+			dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[index] = -1;
+		bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+	}
+	
+	private void setPose(int index, int pose, int currFrame){
+		middlePanel.setPersonPose(index, pose);
+		if (index == middlePanel.talkingIndex)
+			SetRadio(middlePanel.talkingIndex, false, currFrame);
+		if (loading)
+			return;
+		
+		dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[index] = pose;
+		bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+	}
 
 	private void addBattle() {
 
@@ -347,6 +366,11 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			//middlePanel.buttons[loadScene.talkingPosition].setSelected(true);
 		}
 		
+		//Load character 4 talking
+		if (loadScene.talkingPosition == 4){
+			middlePanel.unknownSpeaker.setText(loadScene.characterName);
+		}
+		
 		//Load dialogue text
 		middlePanel.dialogueText.setText(loadScene.dialogue);
 
@@ -359,6 +383,11 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		loading = false;
 		System.out.println("charpos: "+loadScene.talkingPosition + " , "+loadScene.talkingCharacter + " , " +
 	 			loadScene.talkingPose);
+	}
+	
+	private void loadDialogue() {
+		DialogueLines currentDialogue = dialogues.lines[dialogueIndex];
+		rightPanel.dialogueId.setText(currentDialogue.name);
 	}
 
 	@Override
@@ -389,8 +418,12 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			JTextField tField = (JTextField) e.getSource();
 			if (!loading && middlePanel.talkingIndex == 4) {
 				String text = tField.getText();
-				if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE)
-					text += e.getKeyChar();
+				if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
+					int pos = tField.getCaretPosition();
+					String text1 = text.substring(0, pos);
+					String text2 = text.substring(pos);
+					text = text1 + e.getKeyChar() + text2;
+				}
 				dialogues.lines[dialogueIndex].dataList.get(currFrame).characterName = text;
 				middlePanel.closeup.setText(text);
 				bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);

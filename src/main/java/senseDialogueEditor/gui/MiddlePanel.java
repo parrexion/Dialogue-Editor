@@ -37,10 +37,6 @@ import senseDialogueEditor.data.Persons;
 public class MiddlePanel extends JPanel {
 
 	private static final String RESOURCES_IMAGES_GREEN_PNG = "resources/images/green.png";
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public boolean manipulating = false;
@@ -132,7 +128,6 @@ public class MiddlePanel extends JPanel {
 			personImages.get(index).setIcon(null);
 			charPoses.get(index).removeAllItems();
 			charPoses.get(index).addItem("");
-			return;
 		}
 		else {
 			if (lastPose < 0)
@@ -142,8 +137,8 @@ public class MiddlePanel extends JPanel {
 			for(String s : persons.personList.get(selected).poseNames)
 				charPoses.get(index).addItem(s);
 			charPoses.get(index).setSelectedIndex(lastPose);
+			bkgPanel.repaint();
 		}
-		bkgPanel.repaint();
 		manipulating = false;
 	}
 	

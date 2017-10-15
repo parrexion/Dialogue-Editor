@@ -11,11 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Panel which contains the current dialogue information.
+ * Also contains buttons for managing the frames of the current dialogue.
+ * There are also several buttons for adding dialogue effects.
+ *
+ * @author Parrexion
+ */
 public class RightPanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public JTextField dialogueId;
@@ -38,14 +42,9 @@ public class RightPanel extends JPanel {
 
 	}
 	
-	public void updateFrame(){
-		frameNr++;
-		currentFrame.setText("               "+frameNr);
-	}
-	
 	public void setFrame(int nr){
 		frameNr = nr;
-		currentFrame.setText("               "+frameNr);
+		currentFrame.setText("               "+(frameNr+1));
 	}
 	
 	private JPanel createRightPanelInfo(KeyListener keylis){
