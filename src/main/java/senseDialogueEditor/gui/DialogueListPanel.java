@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import senseDialogueEditor.dialogueEditor.DialogueDialogues;
+import senseDialogueEditor.dialogueEditor.DialogueCollection;
 
 public class DialogueListPanel extends JPanel implements KeyListener {
 
@@ -26,10 +26,10 @@ public class DialogueListPanel extends JPanel implements KeyListener {
 
 	public JTable dialogueTable;
 	public DialogueListTable data;
-	public DialogueDialogues dialogueDialogues;
+	public DialogueCollection dialogueDialogues;
 	
 	
-	public DialogueListPanel(ListSelectionListener listlis, DialogueDialogues dialogues) {
+	public DialogueListPanel(ListSelectionListener listlis, DialogueCollection dialogues) {
 		super();
 		this.setLayout(new BorderLayout());
 		
@@ -63,7 +63,7 @@ public class DialogueListPanel extends JPanel implements KeyListener {
 		JTableHeader head = dialogueTable.getTableHeader();
 		head.setDefaultRenderer(rend);
 		dialogueTable.setTableHeader(head);
-		dialogueTable.setRowSelectionInterval(dialogueDialogues.lines.length-1, dialogueDialogues.lines.length-1);
+		dialogueTable.setRowSelectionInterval(dialogueDialogues.dialogues.length-1, dialogueDialogues.dialogues.length-1);
 		dialogueTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		TableColumnModel model = dialogueTable.getColumnModel();
@@ -88,7 +88,7 @@ public class DialogueListPanel extends JPanel implements KeyListener {
 		String text = tField.getText();
 		if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE)
 			text += e.getKeyChar();
-		dialogueDialogues.lines[0].name = text;
-		data.updateFrame(dialogueDialogues.lines[0], 0);
+		dialogueDialogues.dialogues[0].name = text;
+		data.updateFrame(dialogueDialogues.dialogues[0], 0);
 	}
 }

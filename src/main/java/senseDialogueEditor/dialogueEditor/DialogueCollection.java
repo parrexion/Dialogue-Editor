@@ -8,19 +8,19 @@ import java.util.Arrays;
  * @author Parrexion
  *
  */
-public class DialogueDialogues {
+public class DialogueCollection {
 
-	public DialogueLines[] lines;
+	public Dialogue[] dialogues;
 
 	
-	public DialogueDialogues(int size){
-		lines = new DialogueLines[size];
+	public DialogueCollection(int size){
+		dialogues = new Dialogue[size];
 	}
 
 	
 	@Override
 	public String toString() {
-		return "DialogueDialogues [lines=" + Arrays.toString(lines) + "]";
+		return "DialogueCollection [dialogues=" + Arrays.toString(dialogues) + "]";
 	}
 	
 	

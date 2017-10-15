@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author Parrexion
  *
  */
-public class DialogueScene {
+public class Frame {
 
 	public int background;
 	public int[] positions;
@@ -22,7 +22,7 @@ public class DialogueScene {
 	public int talkingPose;
 	
 	
-	public DialogueScene(){
+	public Frame(){
 		background = 0;
 		positions = new int[]{-1,-1,-1,-1,-1};
 		currentPoses = new int[]{-1,-1,-1,-1,-1};
@@ -33,7 +33,7 @@ public class DialogueScene {
 		talkingPose = 0;
 	}
 	
-	public DialogueScene(DialogueScene ds){
+	public Frame(Frame ds){
 		background = ds.background;
 		positions = ds.positions;
 		currentPoses = ds.currentPoses;
@@ -69,7 +69,7 @@ public class DialogueScene {
 	
 	@Override
 	public String toString() {
-		return "DialogueScene [background=" + background + ", positions=" + Arrays.toString(positions)
+		return "Frame [background=" + background + ", positions=" + Arrays.toString(positions)
 				+ ", currentPoses=" + Arrays.toString(currentPoses) + ", characterName=" + characterName + ", dialogue="
 				+ dialogue + ", talkingPosition=" + talkingPosition + ", talkingCharacter=" + talkingCharacter
 				+ ", talkingPose=" + talkingPose + "]";

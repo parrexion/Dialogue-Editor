@@ -17,9 +17,9 @@ import javax.swing.event.ListSelectionListener;
 import senseDialogueEditor.data.Backgrounds;
 import senseDialogueEditor.data.Persons;
 import senseDialogueEditor.dialogueEditor.App;
-import senseDialogueEditor.dialogueEditor.DialogueDialogues;
-import senseDialogueEditor.dialogueEditor.DialogueLines;
-import senseDialogueEditor.dialogueEditor.DialogueScene;
+import senseDialogueEditor.dialogueEditor.DialogueCollection;
+import senseDialogueEditor.dialogueEditor.Dialogue;
+import senseDialogueEditor.dialogueEditor.Frame;
 
 public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
@@ -36,10 +36,10 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	private MiddlePanel middlePanel;
 	private DialogueListPanel dialoguePanel;
 	
-	private DialogueDialogues dialogues;
+	private DialogueCollection dialogues;
 	private int dialogueIndex;
 
-	public GUI(DialogueDialogues dialogues) {
+	public GUI(DialogueCollection dialogues) {
 
 		dialogueIndex = 0;
 
@@ -51,8 +51,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		// System.out.println(lines.dataList.length);
 		dialoguePanel = new DialogueListPanel(this, dialogues);
 		middlePanel = new MiddlePanel(this, this, new Backgrounds(), new Persons());
-		rightPanel = new RightPanel(this, dialoguePanel, dialogues.lines[dialogueIndex].size - 1);
-		bottomPanel = new BottomPanel(this, this, dialogues.lines[dialogueIndex]);
+		rightPanel = new RightPanel(this, dialoguePanel, dialogues.dialogues[dialogueIndex].size - 1);
+		bottomPanel = new BottomPanel(this, this, dialogues.dialogues[dialogueIndex]);
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		sidePanel = new JPanel();
@@ -102,8 +102,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			JComboBox<String> combo = (JComboBox<String>) e.getSource();
 			middlePanel.setBackgroundImage(combo.getSelectedIndex());
 			if (!loading) {
-				dialogues.lines[dialogueIndex].dataList.get(currFrame).background = combo.getSelectedIndex();
-				bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+				dialogues.dialogues[dialogueIndex].frames.get(currFrame).background = combo.getSelectedIndex();
+				bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 			}
 			break;
 
@@ -173,11 +173,11 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			if (loading)
 				return;
 			
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingPosition = -1;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingCharacter = -1;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingPose = -1;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).characterName = "";
-			bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = -1;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingCharacter = -1;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPose = -1;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = "";
+			bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 		} 
 		else if (index == 4) {
 			//If it's the extra character in the middle who's speaking.
@@ -187,20 +187,19 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			middlePanel.talkingImage.setIcon(null);
 			middlePanel.group.clearSelection();
 			middlePanel.group.setSelected(middlePanel.buttons[4].getModel(), true);
-			 System.out.println("Set radio: 4");
+
 			if (loading)
 				return;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingPosition = 4;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingCharacter = -1;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingPose = -1;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).characterName = middlePanel.closeup.getText();
-			bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = 4;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingCharacter = -1;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPose = -1;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = middlePanel.closeup.getText();
+			bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 		} 
 		else {
 			//If one of the normal characters are speaking
 			int indexChar = middlePanel.characters.get(index).getSelectedIndex() - 1;
 			int indexPose = middlePanel.charPoses.get(index).getSelectedIndex();
-//System.out.println("charpos: "+index + " , "+indexChar + " , " + indexPose);
 
 			if (indexChar < 0) {
 				//If the character is undefined.
@@ -225,11 +224,11 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			if (loading)
 				return;
 			
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingPosition = index;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingCharacter = indexChar;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).talkingPose = indexPose;
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).characterName = middlePanel.closeup.getText();
-			bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = index;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingCharacter = indexChar;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPose = indexPose;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = middlePanel.closeup.getText();
+			bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 		}
 	}
 	
@@ -240,18 +239,19 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	 * @param currFrame
 	 */
 	private void setPerson(int index, int character, int currFrame) {
-		int lastPose = dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[index];
+		int lastPose = dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[index];
 		middlePanel.setPersonImage(index, character, lastPose);
+		middlePanel.characters.get(index).setSelectedIndex(character+1);
 		if (index == middlePanel.talkingIndex || middlePanel.talkingIndex == -1 || middlePanel.talkingIndex == 4)
 			SetRadio(middlePanel.talkingIndex, false, currFrame);
 		
 		if (loading)
 			return;
 		
-		dialogues.lines[dialogueIndex].dataList.get(currFrame).positions[index] = character;
+		dialogues.dialogues[dialogueIndex].frames.get(currFrame).positions[index] = character;
 		if (character < 0)
-			dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[index] = -1;
-		bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[index] = -1;
+		bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 	}
 	
 	private void setPose(int index, int pose, int currFrame){
@@ -261,8 +261,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		if (loading)
 			return;
 		
-		dialogues.lines[dialogueIndex].dataList.get(currFrame).currentPoses[index] = pose;
-		bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+		dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[index] = pose;
+		bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 	}
 
 	private void addBattle() {
@@ -273,14 +273,14 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	 * Appends a new frame to the dialogue at the end of it.
 	 */
 	private void addFrame() {
-		int selectedFrame = dialogues.lines[dialogueIndex].size - 1;
+		int selectedFrame = dialogues.dialogues[dialogueIndex].size - 1;
 		// System.out.println("Size: " + selectedFrame);
-		DialogueScene copyScene = new DialogueScene(dialogues.lines[dialogueIndex].dataList.get(selectedFrame));
+		Frame copyScene = new Frame(dialogues.dialogues[dialogueIndex].frames.get(selectedFrame));
 		copyScene.dialogue = "";
 
 		bottomPanel.AddFrame(copyScene);
 		bottomPanel.table.addFrame(copyScene);
-		dialoguePanel.data.updateFrame(dialogues.lines[dialogueIndex], dialogueIndex);
+		dialoguePanel.data.updateFrame(dialogues.dialogues[dialogueIndex], dialogueIndex);
 		loadFrame(selectedFrame + 1);
 		bottomPanel.lines.setRowSelectionInterval(selectedFrame + 1, selectedFrame + 1);
 	}
@@ -291,29 +291,29 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	private void insertFrame() {
 		int selectedFrame = bottomPanel.lines.getSelectedRow();
 //		System.out.println("Size: " + selectedFrame);
-		DialogueScene copyScene = new DialogueScene(dialogues.lines[dialogueIndex].dataList.get(selectedFrame));
+		Frame copyScene = new Frame(dialogues.dialogues[dialogueIndex].frames.get(selectedFrame));
 		copyScene.dialogue = "";
 
 		bottomPanel.InsertFrame(selectedFrame+1, copyScene);
 		bottomPanel.table.insertFrame(selectedFrame+1, copyScene);
-		dialoguePanel.data.updateFrame(dialogues.lines[dialogueIndex], dialogueIndex);
+		dialoguePanel.data.updateFrame(dialogues.dialogues[dialogueIndex], dialogueIndex);
 		loadFrame(selectedFrame + 1);
 		bottomPanel.lines.setRowSelectionInterval(selectedFrame + 1, selectedFrame + 1);
 	}
 
 	private void removeFrame() {
-		if (dialogues.lines[dialogueIndex].dataList.size() > 1) {
+		if (dialogues.dialogues[dialogueIndex].frames.size() > 1) {
 
 			int selectedFrame = rightPanel.frameNr;
 			int newIndex = selectedFrame + 1;
-			if (newIndex == dialogues.lines[dialogueIndex].dataList.size())
+			if (newIndex == dialogues.dialogues[dialogueIndex].frames.size())
 				newIndex -= 2;
 
 			bottomPanel.lines.setRowSelectionInterval(newIndex, newIndex);
 			loadFrame(newIndex);
 			bottomPanel.RemoveFrame(selectedFrame);
 			bottomPanel.table.removeFrame(selectedFrame);
-			dialoguePanel.data.updateFrame(dialogues.lines[dialogueIndex], dialogueIndex);
+			dialoguePanel.data.updateFrame(dialogues.dialogues[dialogueIndex], dialogueIndex);
 		}
 	}
 
@@ -324,18 +324,20 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	private void loadFrame(int selectedFrame) {
 		System.out.println("Loading frame " + selectedFrame);
 		loading = true;
-		DialogueScene loadScene = dialogues.lines[dialogueIndex].dataList.get(selectedFrame);
+		Frame loadScene = dialogues.dialogues[dialogueIndex].frames.get(selectedFrame);
 		
 		//Load background
 		middlePanel.backgrounds.setSelectedIndex(loadScene.background);
 		
 		//Load Characters and poses
 		for (int i = 0; i < 4; i++) {
-			middlePanel.characters.get(i).setSelectedIndex(loadScene.positions[i] + 1);
-			if (loadScene.positions[i] < 0)
-				middlePanel.charPoses.get(i).setSelectedIndex(0);
-			else
-				middlePanel.charPoses.get(i).setSelectedIndex(loadScene.currentPoses[i]);
+			setPerson(i, loadScene.positions[i], selectedFrame);
+//			middlePanel.characters.get(i).setSelectedIndex(loadScene.positions[i] + 1);
+//			if (loadScene.positions[i] < 0)
+//				middlePanel.charPoses.get(i).setSelectedIndex(0);
+//			else
+//				middlePanel.charPoses.get(i).setSelectedIndex(loadScene.currentPoses[i]);
+			setPose(i, loadScene.currentPoses[i], selectedFrame);
 		}
 		
 		//Load unknown speaker name
@@ -386,7 +388,7 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	}
 	
 	private void loadDialogue() {
-		DialogueLines currentDialogue = dialogues.lines[dialogueIndex];
+		Dialogue currentDialogue = dialogues.dialogues[dialogueIndex];
 		rightPanel.dialogueId.setText(currentDialogue.name);
 	}
 
@@ -411,8 +413,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 					String text2 = text.substring(pos);
 					text = text1 + e.getKeyChar() + text2;
 				}
-				dialogues.lines[dialogueIndex].dataList.get(currFrame).dialogue = text;
-				bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+				dialogues.dialogues[dialogueIndex].frames.get(currFrame).dialogue = text;
+				bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 			}
 		} else if (e.getSource() instanceof JTextField) {
 			JTextField tField = (JTextField) e.getSource();
@@ -424,9 +426,9 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 					String text2 = text.substring(pos);
 					text = text1 + e.getKeyChar() + text2;
 				}
-				dialogues.lines[dialogueIndex].dataList.get(currFrame).characterName = text;
+				dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = text;
 				middlePanel.closeup.setText(text);
-				bottomPanel.table.updateFrame(dialogues.lines[dialogueIndex].dataList.get(currFrame), currFrame);
+				bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 			}
 		}
 	}

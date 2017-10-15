@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import senseDialogueEditor.dialogueEditor.DialogueDialogues;
-import senseDialogueEditor.dialogueEditor.DialogueLines;
+import senseDialogueEditor.dialogueEditor.DialogueCollection;
+import senseDialogueEditor.dialogueEditor.Dialogue;
 
 public class DialogueListTable extends AbstractTableModel{
 
@@ -21,20 +21,20 @@ public class DialogueListTable extends AbstractTableModel{
 	private DialogueListTable(){
 	}
 	
-	public DialogueListTable(DialogueDialogues dialogues) {
+	public DialogueListTable(DialogueCollection dialogues) {
 		columnNames = new String[]{"Dialogue","Frames"};
 		data = new ArrayList<>();
-		for(DialogueLines dl : dialogues.lines){
+		for(Dialogue dl : dialogues.dialogues){
 			data.add(dl.convertToTable());
 		}
 	}
 	
-	public void updateFrame(DialogueLines lines,int selectedFrame){
+	public void updateFrame(Dialogue lines,int selectedFrame){
 		data.set(selectedFrame,lines.convertToTable());
 		fireTableRowsUpdated(selectedFrame, selectedFrame);
 	}
 	
-	public void addFrame(DialogueLines lines){
+	public void addFrame(Dialogue lines){
 		data.add(lines.convertToTable());
 		fireTableRowsInserted(getRowCount()-1, getRowCount());
 	}

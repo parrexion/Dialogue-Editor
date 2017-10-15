@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import senseDialogueEditor.dialogueEditor.DialogueLines;
-import senseDialogueEditor.dialogueEditor.DialogueScene;
+import senseDialogueEditor.dialogueEditor.Dialogue;
+import senseDialogueEditor.dialogueEditor.Frame;
 
 public class FrameLineTable extends AbstractTableModel{
 
@@ -21,7 +21,7 @@ public class FrameLineTable extends AbstractTableModel{
 		
 		columnNames = new String[]{"Background","Characters","Poses","Talking","Text"};
 		data = new ArrayList<>();
-		DialogueScene scene = new DialogueScene();
+		Frame scene = new Frame();
 		data.add(scene.convertToTable());
 		scene.positions = new int[]{30,13,11,53};
 		scene.currentPoses = new int[]{13,23,11,33};
@@ -35,25 +35,25 @@ public class FrameLineTable extends AbstractTableModel{
 		data.add(scene.convertToTable());
 	}
 	
-	public FrameLineTable(DialogueLines lines) {
+	public FrameLineTable(Dialogue lines) {
 		columnNames = new String[]{"Background","Characters","Poses","Talking","Text"};
 		data = new ArrayList<>();
-		for(DialogueScene ds : lines.dataList){
+		for(Frame ds : lines.frames){
 			data.add(ds.convertToTable());
 		}
 	}
 	
-	public void updateFrame(DialogueScene scene,int selectedFrame){
+	public void updateFrame(Frame scene,int selectedFrame){
 		data.set(selectedFrame,scene.convertToTable());
 		fireTableRowsUpdated(selectedFrame, selectedFrame);
 	}
 	
-	public void addFrame(DialogueScene scene){
+	public void addFrame(Frame scene){
 		data.add(scene.convertToTable());
 		fireTableRowsInserted(getRowCount()-1, getRowCount());
 	}
 	
-	public void insertFrame(int index, DialogueScene scene){
+	public void insertFrame(int index, Frame scene){
 		data.add(index, scene.convertToTable());
 		fireTableRowsInserted(index-1, index);
 	}

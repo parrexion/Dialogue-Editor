@@ -19,8 +19,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import senseDialogueEditor.dialogueEditor.DialogueLines;
-import senseDialogueEditor.dialogueEditor.DialogueScene;
+import senseDialogueEditor.dialogueEditor.Dialogue;
+import senseDialogueEditor.dialogueEditor.Frame;
 import senseDialogueEditor.extra.SmartScroller;
 
 /**
@@ -35,11 +35,11 @@ public class BottomPanel extends JPanel {
 	
 	public JTable lines;
 	public FrameLineTable table;
-	public DialogueLines lineData;
+	public Dialogue lineData;
 	private JScrollPane scrollPane;
 	
 	
-	public BottomPanel(ActionListener listner, ListSelectionListener listlis, DialogueLines data) {
+	public BottomPanel(ActionListener listner, ListSelectionListener listlis, Dialogue data) {
 		super();
 		
 		table = new FrameLineTable();
@@ -52,11 +52,11 @@ public class BottomPanel extends JPanel {
 		this.add(createBottomPanelLines(listlis), BorderLayout.CENTER);
 	}
 
-	public void AddFrame(DialogueScene scene){
+	public void AddFrame(Frame scene){
 		lineData.AddAction(scene);
 		validate();
 	}
-	public void InsertFrame(int index, DialogueScene scene){
+	public void InsertFrame(int index, Frame scene){
 		lineData.InsertAction(index,scene);
 		validate();
 	}

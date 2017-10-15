@@ -16,7 +16,7 @@ import senseDialogueEditor.gui.GUI;
 
 public class App {
 	
-	public static DialogueDialogues dialogue = null;
+	public static DialogueCollection dialogue = null;
 	public static String filepath = "C:\\Users\\Parrexion\\Documents\\2D Prototype - Sense\\Assets\\Resources\\";
 	public static String backgroundFilepath = "C:\\Users\\Parrexion\\Documents\\2D Prototype - Sense\\Assets\\Backgrounds\\";
 	public static String name = "test.json";
@@ -57,7 +57,7 @@ public class App {
     	
     	try (Reader reader = new FileReader(filename)) {
     	
-	    	dialogue = gson.fromJson(reader, DialogueDialogues.class);
+	    	dialogue = gson.fromJson(reader, DialogueCollection.class);
 //	    	System.out.println(dialogue.lines[0].dataList.length);
 //	    	System.out.println(dialogue.toString());
     	} catch (IOException e) {
@@ -94,8 +94,8 @@ public class App {
     	
     }
     
-    public static DialogueScene addScene(int bkg,int[] pos,int[] cpose,String cName,String text,int tPosition,int tChar,int tPose) {
-    	DialogueScene scene = new DialogueScene();
+    public static Frame addScene(int bkg,int[] pos,int[] cpose,String cName,String text,int tPosition,int tChar,int tPose) {
+    	Frame scene = new Frame();
 		scene.background = bkg;
 		scene.positions = pos;
 		scene.currentPoses = cpose;
@@ -112,9 +112,9 @@ public class App {
 	@SuppressWarnings("unused")
 	private static void TemporaryDialogue(){
 
-    	dialogue = new DialogueDialogues(1);
-    	DialogueLines lineEntry = new DialogueLines("Test 1");
-    	dialogue.lines[0] = lineEntry;
+    	dialogue = new DialogueCollection(1);
+    	Dialogue lineEntry = new Dialogue("Test 1");
+    	dialogue.dialogues[0] = lineEntry;
     	
     	int bkg = 0;
     	int[] pos = new int[]{-1,-1,-1,-1,-1};

@@ -117,40 +117,42 @@ public class MiddlePanel extends JPanel {
 	
 	/**
 	 * Updates the character at index to the selected character.
-	 * @param index Character index
-	 * @param selected Selected character
+	 * @param position Character index
+	 * @param charIndex Selected character
 	 */
-	public void setPersonImage(int index, int selected, int lastPose){
+	public void setPersonImage(int position, int charIndex, int lastPose){
 		
 		manipulating = true;
 		
-		if (selected < 0){
-			personImages.get(index).setIcon(null);
-			charPoses.get(index).removeAllItems();
-			charPoses.get(index).addItem("");
+		if (charIndex < 0){
+			personImages.get(position).setIcon(null);
+			charPoses.get(position).removeAllItems();
+			charPoses.get(position).addItem("");
 		}
 		else {
 			if (lastPose < 0)
 				lastPose = 0;
-			personImages.get(index).setIcon((Icon)persons.personList.get(selected).poses[lastPose]);
-			charPoses.get(index).removeAllItems();
-			for(String s : persons.personList.get(selected).poseNames)
-				charPoses.get(index).addItem(s);
-			charPoses.get(index).setSelectedIndex(lastPose);
+			personImages.get(position).setIcon((Icon)persons.personList.get(charIndex).poses[lastPose]);
+			charPoses.get(position).removeAllItems();
+			for(String s : persons.personList.get(charIndex).poseNames)
+				charPoses.get(position).addItem(s);
+			charPoses.get(position).setSelectedIndex(lastPose);
 			bkgPanel.repaint();
 		}
 		manipulating = false;
 	}
 	
-	public void setPersonPose(int index, int selected){
+	public void setPersonPose(int index, int poseIndex){
 		
-		if (selected < 0){
+		if (poseIndex < 0){
 			return;
 		}
 		else {
 			int image = characters.get(index).getSelectedIndex()-1;
-			personImages.get(index).setIcon((Icon) persons.personList.get(image).poses[selected]);
-//			System.out.println("index: " + image + ", seleceted: " + selected);
+			if (image >= 0){
+				personImages.get(index).setIcon((Icon) persons.personList.get(image).poses[poseIndex]);
+	//			System.out.println("index: " + image + ", selected: " + selected);
+			}
 		}
 		bkgPanel.repaint();
 	}
