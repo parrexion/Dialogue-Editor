@@ -23,15 +23,13 @@ public class FrameLineTable extends AbstractTableModel{
 		data = new ArrayList<>();
 		Frame scene = new Frame();
 		data.add(scene.convertToTable());
-		scene.positions = new int[]{30,13,11,53};
+		scene.currentCharacters = new int[]{30,13,11,53};
 		scene.currentPoses = new int[]{13,23,11,33};
 		scene.background = 0;
 		data.add(scene.convertToTable());
 		scene.characterName = "NameIsSoLong Indeed";
 		scene.talkingPosition = 1;
-		scene.talkingCharacter = 1;
-		scene.talkingPose = 1;
-		scene.dialogue = "This is some text. And then there are a lot more text which needs to fit in the box.";
+		scene.dialogueText = "This is some text. And then there are a lot more text which needs to fit in the box.";
 		data.add(scene.convertToTable());
 	}
 	
@@ -48,14 +46,9 @@ public class FrameLineTable extends AbstractTableModel{
 		fireTableRowsUpdated(selectedFrame, selectedFrame);
 	}
 	
-	public void addFrame(Frame scene){
-		data.add(scene.convertToTable());
-		fireTableRowsInserted(getRowCount()-1, getRowCount());
-	}
-	
 	public void insertFrame(int index, Frame scene){
 		data.add(index, scene.convertToTable());
-		fireTableRowsInserted(index-1, index);
+		fireTableRowsInserted(index, index);
 	}
 	
 	public void removeFrame(int index){

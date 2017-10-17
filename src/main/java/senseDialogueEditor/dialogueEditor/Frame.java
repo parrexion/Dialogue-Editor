@@ -10,38 +10,32 @@ import java.util.Arrays;
 public class Frame {
 
 	public int background;
-	public int[] positions;
+	public int[] currentCharacters;
 	public int[] currentPoses;
 	/**
 	 * The name of the extra character in the middle.
 	 */
 	public String characterName;
-	public String dialogue;
+	public String dialogueText;
 	public int talkingPosition;
-	public int talkingCharacter;
-	public int talkingPose;
 	
 	
 	public Frame(){
 		background = 0;
-		positions = new int[]{-1,-1,-1,-1,-1};
+		currentCharacters = new int[]{-1,-1,-1,-1,-1};
 		currentPoses = new int[]{-1,-1,-1,-1,-1};
 		characterName = "";
-		dialogue = "";
+		dialogueText = "";
 		talkingPosition = -1;
-		talkingCharacter = -1;
-		talkingPose = 0;
 	}
 	
 	public Frame(Frame ds){
 		background = ds.background;
-		positions = ds.positions;
+		currentCharacters = ds.currentCharacters;
 		currentPoses = ds.currentPoses;
 		characterName = ds.characterName;
-		dialogue = ds.dialogue;
+		dialogueText = ds.dialogueText;
 		talkingPosition = ds.talkingPosition;
-		talkingCharacter = ds.talkingCharacter;
-		talkingPose = ds.talkingPose;
 	}
 	
 	public Object[] convertToTable(){
@@ -49,8 +43,8 @@ public class Frame {
 		String pos = "";
 		String poses = "";
 		for (int i = 0; i < 4; i++) {
-			if (positions[i] != -1){
-				pos += positions[i];
+			if (currentCharacters[i] != -1){
+				pos += currentCharacters[i];
 			}
 			if (currentPoses[i] != -1)
 				poses += currentPoses[i];
@@ -60,19 +54,19 @@ public class Frame {
 			pos += " , ";
 			poses += " , ";
 		}
+		int talkingPose = (talkingPosition >= 0) ? currentPoses[talkingPosition] : -1;
 		String talk = talkingPosition + " , " + characterName.split(" ")[0] + " , " + talkingPose;
 		
-		return new Object[]{background,pos,poses,talk,dialogue};
+		return new Object[]{background,pos,poses,talk,dialogueText};
 	}
 
 	
 	
 	@Override
 	public String toString() {
-		return "Frame [background=" + background + ", positions=" + Arrays.toString(positions)
+		return "Frame [background=" + background + ", positions=" + Arrays.toString(currentCharacters)
 				+ ", currentPoses=" + Arrays.toString(currentPoses) + ", characterName=" + characterName + ", dialogue="
-				+ dialogue + ", talkingPosition=" + talkingPosition + ", talkingCharacter=" + talkingCharacter
-				+ ", talkingPose=" + talkingPose + "]";
+				+ dialogueText + ", talkingPosition=" + talkingPosition + "]";
 	}
 
 	

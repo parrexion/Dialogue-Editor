@@ -46,22 +46,21 @@ public class MiddlePanel extends JPanel {
 	public PicturePanel bkgPanel;
 	
 	public Persons persons;
-	public List<JComboBox<String>> characters;
-	public List<JComboBox<String>> charPoses;
+	private List<JComboBox<String>> characters;
+	private List<JComboBox<String>> charPoses;
 	public List<JLabel> personImages;
 	/** Textfield containing the name of the extra character in the middle.*/
 	public JTextField unknownSpeaker;
 	
 	public JRadioButton[] buttons;
 	public int talkingIndex;
-	public JLabel talkingImage;
-	public JTextField closeup;
-	public JTextField closePose;
+	private JLabel talkingImage;
+	private JTextField closeupChar;
+	private JTextField closeupPose;
 	public JTextArea dialogueText;
 
-	public ButtonGroup group;
+	private ButtonGroup group;
 
-	
 
 	public MiddlePanel(ActionListener listner,KeyListener listner2, Backgrounds bkgs, Persons persons) {
 		super();
@@ -70,8 +69,8 @@ public class MiddlePanel extends JPanel {
 		characters = new ArrayList<JComboBox<String>>();
 		charPoses = new ArrayList<JComboBox<String>>();
 		personImages = new ArrayList<>();
-		closeup = new JTextField();
-		closePose = new JTextField();
+		closeupChar = new JTextField();
+		closeupPose = new JTextField();
 		
 		for (int i = 0; i < 4; i++) {
 			JComboBox<String> combo = new JComboBox<String>();
@@ -86,7 +85,7 @@ public class MiddlePanel extends JPanel {
 			combo = new JComboBox<String>();
 			combo.addItem("");
 			combo.addActionListener(listner);
-			combo.setActionCommand("pose,"+i);
+			combo.setActionCommand("person,"+i);
 			charPoses.add(combo);
 		}
 
@@ -100,7 +99,6 @@ public class MiddlePanel extends JPanel {
 		
 		talkingIndex = -1;
 
-		
 		this.setBorder(BorderFactory.createTitledBorder("Scene"));
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(GUI.SCREENWIDTH, GUI.SCREENHEIGHT));
@@ -109,6 +107,10 @@ public class MiddlePanel extends JPanel {
 		this.add(createMiddlePanelTextPart(listner2), BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Sets the background of the dialogue to the background at the given index.
+	 * @param index
+	 */
 	public void setBackgroundImage(int index){
 		
 		bkgPanel.background = bkgs.backgrounds.get(index).image;
@@ -116,11 +118,13 @@ public class MiddlePanel extends JPanel {
 	}
 	
 	/**
-	 * Updates the character at index to the selected character.
-	 * @param position Character index
-	 * @param charIndex Selected character
+	 * Updates the character image and pose to the given values for the character at position.
+	 * @param position
+	 * @param charIndex
+	 * @param poseIndex
+	 * @param lastPose
 	 */
-	public void setPersonImage(int position, int charIndex, int lastPose){
+	public void setPersonImage(int position, int charIndex, int poseIndex){
 		
 		manipulating = true;
 		
@@ -128,30 +132,59 @@ public class MiddlePanel extends JPanel {
 			personImages.get(position).setIcon(null);
 			charPoses.get(position).removeAllItems();
 			charPoses.get(position).addItem("");
+			setCharacterSelection(position, -1, -1);
 		}
 		else {
-			if (lastPose < 0)
-				lastPose = 0;
-			personImages.get(position).setIcon((Icon)persons.personList.get(charIndex).poses[lastPose]);
+			int lastPose = Math.max(0, poseIndex);
 			charPoses.get(position).removeAllItems();
-			for(String s : persons.personList.get(charIndex).poseNames)
-				charPoses.get(position).addItem(s);
-			charPoses.get(position).setSelectedIndex(lastPose);
+			if (charPoses.get(position).getItemCount() == 0) {
+				for(String s : persons.personList.get(charIndex).poseNames)
+					charPoses.get(position).addItem(s);
+			}
+			setCharacterSelection(position, charIndex, lastPose);
+			personImages.get(position).setIcon((Icon)persons.personList.get(charIndex).poses[lastPose]);
 			bkgPanel.repaint();
 		}
 		manipulating = false;
 	}
 	
-	public void setPersonPose(int index, int poseIndex){
-		
-		if (poseIndex < 0){
-			return;
+	/**
+	 * Updates the character using the current state of the combo boxes.
+	 * @param position
+	 */
+	public void updatePersonImage(int position){
+		int charIndex = getSelectedCharacterIndex(position);
+		int poseIndex = getSelectedPoseIndex(position);
+		setPersonImage(position, charIndex, poseIndex);
+	}
+	
+	public void setTalkingPerson(int talkingIndex){
+		this.talkingIndex = talkingIndex;
+		group.clearSelection();
+		if (talkingIndex != -1){
+			group.setSelected(buttons[talkingIndex].getModel(), true);
 		}
-		else {
-			int image = characters.get(index).getSelectedIndex()-1;
-			if (image >= 0){
-				personImages.get(index).setIcon((Icon) persons.personList.get(image).poses[poseIndex]);
-	//			System.out.println("index: " + image + ", selected: " + selected);
+	}
+	
+	/**
+	 * Updates the closeup picture for the talking character.
+	 * @param talkingPosition
+	 */
+	public void setTalkingIcon(int talkingPosition){
+		closeupChar.setText("");
+		closeupPose.setText("");
+		talkingImage.setIcon(null);
+		if (talkingPosition == 4){
+			validate();
+			closeupChar.setText(unknownSpeaker.getText());
+		}
+		else if (talkingPosition > -1) {
+			int imageCharacter = characters.get(talkingPosition).getSelectedIndex()-1;
+			int imagePose = charPoses.get(talkingPosition).getSelectedIndex();
+			if (imageCharacter > -1){
+				talkingImage.setIcon((Icon) persons.personList.get(imageCharacter).poses[imagePose]);
+				closeupChar.setText(characters.get(talkingPosition).getSelectedItem().toString());
+				closeupPose.setText(charPoses.get(talkingPosition).getSelectedItem().toString());
 			}
 		}
 		bkgPanel.repaint();
@@ -308,12 +341,12 @@ public class MiddlePanel extends JPanel {
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
 		panel.setPreferredSize(new Dimension(200, 140));
 
-		closeup.setEditable(false);
-		closePose.setEditable(false);
+		closeupChar.setEditable(false);
+		closeupPose.setEditable(false);
 		
-		panel.add(closeup);
+		panel.add(closeupChar);
 		panel.add(Box.createRigidArea(new Dimension(0, 8)));
-		panel.add(closePose);
+		panel.add(closeupPose);
 		
 		return panel;
 	}
@@ -329,32 +362,36 @@ public class MiddlePanel extends JPanel {
 		dialogueText.setLineWrap(true);
 		dialogueText.setWrapStyleWord(true);
 		dialogueText.addKeyListener(listner);
-//		dialogueText.getDocument().addDocumentListener(generateDocumentListener());
 		dialogueText.setPreferredSize(new Dimension(200, 30));
 		panel.add(dialogueText, BorderLayout.CENTER);
 		
 		return panel;
 	}
 
-	
-//	public DocumentListener generateDocumentListener() {
-//	return new DocumentListener() {
-//		  public void changedUpdate(DocumentEvent e) {
-//		    check();
-//		  }
-//		  public void removeUpdate(DocumentEvent e) {
-//		    check();
-//		  }
-//		  public void insertUpdate(DocumentEvent e) {
-//		    check();
-//		  }
-//
-//		  public void check() {
-//		     if (dialogueText.getLineCount()>3){//make sure no more than 3 lines
-//		       dialogueText.set
-//		       System.out.println("Rows are now: " + dialogueText.getLineCount());
-//		     }
-//		  }
-//		};
-//	}
+
+	private void setCharacterSelection(int position, int indexChar, int indexPose) {
+		characters.get(position).setSelectedIndex(indexChar+1);
+		if (indexChar < 0)
+			indexPose = 0;
+		charPoses.get(position).setSelectedIndex(indexPose);
+	}
+	public int getSelectedCharacterIndex(int position) {
+		if (position < 0 || position == 4)
+			return -1;
+		return characters.get(position).getSelectedIndex()-1;
+	}
+	public int getSelectedPoseIndex(int position) {
+		if (position < 0 || position == 4)
+			return -1;
+		return charPoses.get(position).getSelectedIndex();
+	}
+	public String getTalkingCharacter() {
+		return closeupChar.getText();
+	}
+	public String getTalkingPose() {
+		return closeupPose.getText();
+	}
+	public void setUnknownSpeakerName(String newName){
+		closeupChar.setText(newName);
+	}
 }

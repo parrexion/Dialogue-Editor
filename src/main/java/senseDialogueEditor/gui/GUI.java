@@ -64,7 +64,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		sidePanel.add(dialoguePanel, BorderLayout.CENTER);
 
 		loadDialogue();
-		loadFrame(rightPanel.frameNr);
+		//loadFrame(rightPanel.frameNr);
+		bottomPanel.lines.setRowSelectionInterval(rightPanel.frameNr, rightPanel.frameNr);
 
 		frame.add(mainPanel, BorderLayout.CENTER);
 		frame.add(bottomPanel, BorderLayout.SOUTH);
@@ -108,21 +109,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			break;
 
 		case "person":
-			int person = Integer.valueOf(values[1]);
-			JComboBox<String> combo2 = (JComboBox<String>) e.getSource();
-			int character = combo2.getSelectedIndex() - 1;
-			setPerson(person, character, currFrame);
-			break;
-
-		case "pose":
-			if (middlePanel.manipulating)
-				return;
-			int index = Integer.valueOf(values[1]);
-			JComboBox<String> combo3 = (JComboBox<String>) e.getSource();
-			int pose = combo3.getSelectedIndex();
-			if (combo3.getSelectedItem().toString() == "")
-				pose = -1;
-			setPose(index, pose, currFrame);
+			int position = Integer.valueOf(values[1]);
+			updatePerson(position, currFrame);
 			break;
 
 		case "loadframe":
@@ -133,10 +121,6 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 		case "addbattle":
 			addBattle();
-			break;
-
-		case "addframe":
-			addFrame();
 			break;
 
 		case "insertframe":
@@ -156,133 +140,65 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 	/**
 	 * Sets the radio button at index or removes the selection if remove is true 
 	 * for the frame currFrame.
-	 * @param index Radio button manipulated
-	 * @param remove If it's possible to deselect the radio button
+	 * @param position Radio button manipulated
+	 * @param remove If it should be possible to deselect the radio button
 	 * @param currFrame Frame manipulated
 	 */
-	private void SetRadio(int index, boolean remove, int currFrame) {
+	private void SetRadio(int position, boolean remove, int currFrame) {
 
-		if (index == -1 || (index == middlePanel.talkingIndex && remove)) {
-			//If deselecting or the same is clicked again, remove selection.
-			middlePanel.talkingIndex = -1;
-			middlePanel.closeup.setText("");
-			middlePanel.closePose.setText("");
-			middlePanel.talkingImage.setIcon(null);
-			middlePanel.group.clearSelection();
-
-			if (loading)
-				return;
-			
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = -1;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingCharacter = -1;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPose = -1;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = "";
-			bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
+		String characterName = "";
+		int indexChar = middlePanel.getSelectedCharacterIndex(position);
+		
+		if (position == middlePanel.talkingIndex && remove) {
+			//If the same is clicked again, remove selection.
+			position = -1;
 		} 
-		else if (index == 4) {
+		if (position == 4) {
 			//If it's the extra character in the middle who's speaking.
-			middlePanel.talkingIndex = index;
-			middlePanel.closeup.setText(middlePanel.unknownSpeaker.getText());
-			middlePanel.closePose.setText("");
-			middlePanel.talkingImage.setIcon(null);
-			middlePanel.group.clearSelection();
-			middlePanel.group.setSelected(middlePanel.buttons[4].getModel(), true);
-
-			if (loading)
-				return;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = 4;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingCharacter = -1;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPose = -1;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = middlePanel.closeup.getText();
-			bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
-		} 
-		else {
-			//If one of the normal characters are speaking
-			int indexChar = middlePanel.characters.get(index).getSelectedIndex() - 1;
-			int indexPose = middlePanel.charPoses.get(index).getSelectedIndex();
-
-			if (indexChar < 0) {
-				//If the character is undefined.
-				index = -1;
-				indexPose = -1;
-				middlePanel.talkingIndex = -1;
-				middlePanel.closeup.setText("");
-				middlePanel.closePose.setText("");
-				middlePanel.talkingImage.setIcon(null);
-				middlePanel.group.clearSelection();
-			}
-			else {
-				//If the character exists
-				middlePanel.talkingIndex = index;
-				middlePanel.closeup.setText(middlePanel.characters.get(index).getSelectedItem().toString());
-				middlePanel.closePose.setText(middlePanel.charPoses.get(index).getSelectedItem().toString());
-				middlePanel.talkingImage.setIcon(middlePanel.persons.personList.get(indexChar).poses[indexPose]);
-				middlePanel.group.clearSelection();
-				middlePanel.group.setSelected(middlePanel.buttons[index].getModel(), true);
-			}
-			
-			if (loading)
-				return;
-			
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = index;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingCharacter = indexChar;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPose = indexPose;
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = middlePanel.closeup.getText();
-			bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
+			characterName = middlePanel.unknownSpeaker.getText();
 		}
-	}
-	
-	/**
-	 * Set the character for the person at index position.
-	 * @param index
-	 * @param character
-	 * @param currFrame
-	 */
-	private void setPerson(int index, int character, int currFrame) {
-		int lastPose = dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[index];
-		middlePanel.setPersonImage(index, character, lastPose);
-		middlePanel.characters.get(index).setSelectedIndex(character+1);
-		if (index == middlePanel.talkingIndex || middlePanel.talkingIndex == -1 || middlePanel.talkingIndex == 4)
-			SetRadio(middlePanel.talkingIndex, false, currFrame);
+		else if (indexChar < 0) {
+			//If there is no character to show
+			position = -1;
+		}
+		
+		middlePanel.setTalkingPerson(position);
+		middlePanel.setTalkingIcon(position);
 		
 		if (loading)
 			return;
 		
-		dialogues.dialogues[dialogueIndex].frames.get(currFrame).positions[index] = character;
-		if (character < 0)
-			dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[index] = -1;
+		dialogues.dialogues[dialogueIndex].frames.get(currFrame).talkingPosition = position;
+		dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = characterName;
 		bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 	}
 	
-	private void setPose(int index, int pose, int currFrame){
-		middlePanel.setPersonPose(index, pose);
-		if (index == middlePanel.talkingIndex)
+	/**
+	 * Updates the person at index position after changing the combo boxes.
+	 * @param position
+	 * @param character
+	 * @param currFrame
+	 */
+	private void updatePerson(int position, int currFrame) {
+		middlePanel.updatePersonImage(position);
+		
+		if (position == middlePanel.talkingIndex)
 			SetRadio(middlePanel.talkingIndex, false, currFrame);
+		
 		if (loading)
 			return;
 		
-		dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[index] = pose;
+		int character = middlePanel.getSelectedCharacterIndex(position);
+		int pose = middlePanel.getSelectedPoseIndex(position);
+		if (character < 0)
+			pose = -1;
+		dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentCharacters[position] = character;
+			dialogues.dialogues[dialogueIndex].frames.get(currFrame).currentPoses[position] = pose;
 		bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 	}
 
 	private void addBattle() {
 
-	}
-
-	/**
-	 * Appends a new frame to the dialogue at the end of it.
-	 */
-	private void addFrame() {
-		int selectedFrame = dialogues.dialogues[dialogueIndex].size - 1;
-		// System.out.println("Size: " + selectedFrame);
-		Frame copyScene = new Frame(dialogues.dialogues[dialogueIndex].frames.get(selectedFrame));
-		copyScene.dialogue = "";
-
-		bottomPanel.AddFrame(copyScene);
-		bottomPanel.table.addFrame(copyScene);
-		dialoguePanel.data.updateFrame(dialogues.dialogues[dialogueIndex], dialogueIndex);
-		loadFrame(selectedFrame + 1);
-		bottomPanel.lines.setRowSelectionInterval(selectedFrame + 1, selectedFrame + 1);
 	}
 
 	/**
@@ -292,12 +208,12 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		int selectedFrame = bottomPanel.lines.getSelectedRow();
 //		System.out.println("Size: " + selectedFrame);
 		Frame copyScene = new Frame(dialogues.dialogues[dialogueIndex].frames.get(selectedFrame));
-		copyScene.dialogue = "";
+		copyScene.dialogueText = "";
 
 		bottomPanel.InsertFrame(selectedFrame+1, copyScene);
 		bottomPanel.table.insertFrame(selectedFrame+1, copyScene);
 		dialoguePanel.data.updateFrame(dialogues.dialogues[dialogueIndex], dialogueIndex);
-		loadFrame(selectedFrame + 1);
+		//loadFrame(selectedFrame + 1);
 		bottomPanel.lines.setRowSelectionInterval(selectedFrame + 1, selectedFrame + 1);
 	}
 
@@ -331,42 +247,18 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		
 		//Load Characters and poses
 		for (int i = 0; i < 4; i++) {
-			setPerson(i, loadScene.positions[i], selectedFrame);
-//			middlePanel.characters.get(i).setSelectedIndex(loadScene.positions[i] + 1);
-//			if (loadScene.positions[i] < 0)
-//				middlePanel.charPoses.get(i).setSelectedIndex(0);
-//			else
-//				middlePanel.charPoses.get(i).setSelectedIndex(loadScene.currentPoses[i]);
-			setPose(i, loadScene.currentPoses[i], selectedFrame);
+			middlePanel.setPersonImage(i, loadScene.currentCharacters[i], loadScene.currentPoses[i]);
 		}
 		
 		//Load unknown speaker name
-		if (loadScene.talkingCharacter == 4)
+		if (loadScene.talkingPosition == 4)
 			middlePanel.unknownSpeaker.setText(loadScene.characterName);
 		
 		//Load talking closeup
-		if (loadScene.talkingPosition != 4 && loadScene.talkingPosition != -1){
-			middlePanel.closeup.setText(middlePanel.characters.get(loadScene.talkingPosition).getSelectedItem().toString());
-			middlePanel.closePose.setText(middlePanel.charPoses.get(loadScene.talkingPosition).getSelectedItem().toString());
-			middlePanel.talkingImage.setIcon(middlePanel.persons.personList.get(loadScene.talkingCharacter).poses[loadScene.talkingPose]);
-		}
-		else {
-			if (loadScene.talkingPosition == 4)
-				middlePanel.closeup.setText(loadScene.characterName);
-			else
-				middlePanel.closeup.setText("");
-			
-			middlePanel.closePose.setText("");
-			middlePanel.talkingImage.setIcon(null);
-		}
+		middlePanel.setTalkingIcon(loadScene.talkingPosition);
 
 		//Load talking radio buttons
-		middlePanel.group.clearSelection();
-		middlePanel.talkingIndex = loadScene.talkingPosition;
-		if (loadScene.talkingPosition != -1) {
-			middlePanel.group.setSelected(middlePanel.buttons[loadScene.talkingPosition].getModel(),true);
-			//middlePanel.buttons[loadScene.talkingPosition].setSelected(true);
-		}
+		middlePanel.setTalkingPerson(loadScene.talkingPosition);
 		
 		//Load character 4 talking
 		if (loadScene.talkingPosition == 4){
@@ -374,17 +266,15 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		}
 		
 		//Load dialogue text
-		middlePanel.dialogueText.setText(loadScene.dialogue);
+		middlePanel.dialogueText.setText(loadScene.dialogueText);
 
 		//Load frame information
 		rightPanel.setFrame(selectedFrame);
 		
 		//Set line selection
-		bottomPanel.lines.setRowSelectionInterval(selectedFrame, selectedFrame);
+		//bottomPanel.lines.setRowSelectionInterval(selectedFrame, selectedFrame);
 		
 		loading = false;
-		System.out.println("charpos: "+loadScene.talkingPosition + " , "+loadScene.talkingCharacter + " , " +
-	 			loadScene.talkingPose);
 	}
 	
 	private void loadDialogue() {
@@ -392,14 +282,9 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		rightPanel.dialogueId.setText(currentDialogue.name);
 	}
 
-	@Override
-	public void keyPressed(KeyEvent arg0) {
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
-
+	/**
+	 * Updates the dialogue text and unknown speaker fields whenever the user types.
+	 */
 	@Override
 	public void keyTyped(KeyEvent e) {
 		int currFrame = rightPanel.frameNr;
@@ -413,7 +298,7 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 					String text2 = text.substring(pos);
 					text = text1 + e.getKeyChar() + text2;
 				}
-				dialogues.dialogues[dialogueIndex].frames.get(currFrame).dialogue = text;
+				dialogues.dialogues[dialogueIndex].frames.get(currFrame).dialogueText = text;
 				bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 			}
 		} else if (e.getSource() instanceof JTextField) {
@@ -427,16 +312,26 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 					text = text1 + e.getKeyChar() + text2;
 				}
 				dialogues.dialogues[dialogueIndex].frames.get(currFrame).characterName = text;
-				middlePanel.closeup.setText(text);
+				middlePanel.setTalkingIcon(4);
+				middlePanel.setUnknownSpeakerName(text);
 				bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 			}
 		}
 	}
 
+	/**
+	 * Calls load frame whenever the user clicks a row in the frame table.
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		if (e.getValueIsAdjusting())
+            return;
 		int selectedFrame = bottomPanel.lines.getSelectedRow();
 		loadFrame(selectedFrame);
 	}
 
+	@Override
+	public void keyPressed(KeyEvent arg0) {}
+	@Override
+	public void keyReleased(KeyEvent arg0) {}
 }

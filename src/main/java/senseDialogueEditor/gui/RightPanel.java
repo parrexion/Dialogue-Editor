@@ -98,9 +98,9 @@ public class RightPanel extends JPanel {
 		panel.setLayout(border);
 		panel.setPreferredSize(new Dimension(200, 150));
 		
-		JButton frameButton = new JButton("Add frame");
-		frameButton.addActionListener(listner);
-		frameButton.setActionCommand("addframe");
+//		JButton frameButton = new JButton("Add frame");
+//		frameButton.addActionListener(listner);
+//		frameButton.setActionCommand("addframe");
 		
 		JButton insertButton = new JButton("Insert frame");
 		insertButton.addActionListener(listner);
@@ -111,8 +111,8 @@ public class RightPanel extends JPanel {
 		deleteButton.setActionCommand("deleteframe");
 
 		panel.add(deleteButton,BorderLayout.NORTH);
-		panel.add(frameButton,BorderLayout.CENTER);
-		panel.add(insertButton,BorderLayout.SOUTH);
+//		panel.add(frameButton,BorderLayout.CENTER);
+		panel.add(insertButton,BorderLayout.CENTER);
 		return panel;
 	}
 	
