@@ -112,7 +112,6 @@ public class MiddlePanel extends JPanel {
 	 * @param index
 	 */
 	public void setBackgroundImage(int index){
-		
 		bkgPanel.background = bkgs.backgrounds.get(index).image;
 		bkgPanel.repaint();
 	}

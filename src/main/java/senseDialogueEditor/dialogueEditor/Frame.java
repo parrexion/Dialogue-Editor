@@ -31,8 +31,12 @@ public class Frame {
 	
 	public Frame(Frame ds){
 		background = ds.background;
-		currentCharacters = ds.currentCharacters;
-		currentPoses = ds.currentPoses;
+		currentCharacters = new int[]{-1,-1,-1,-1,-1};
+		currentPoses = new int[]{-1,-1,-1,-1,-1};
+		for(int i = 0; i < 5; i++){
+			currentCharacters[i] = ds.currentCharacters[i];
+			currentPoses[i] = ds.currentPoses[i];
+		}
 		characterName = ds.characterName;
 		dialogueText = ds.dialogueText;
 		talkingPosition = ds.talkingPosition;

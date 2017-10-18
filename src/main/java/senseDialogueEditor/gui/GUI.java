@@ -63,8 +63,7 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 		sidePanel.add(dialoguePanel, BorderLayout.CENTER);
 
-		loadDialogue();
-		//loadFrame(rightPanel.frameNr);
+		loadDialogue(dialogueIndex);
 		bottomPanel.lines.setRowSelectionInterval(rightPanel.frameNr, rightPanel.frameNr);
 
 		frame.add(mainPanel, BorderLayout.CENTER);
@@ -101,9 +100,10 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 		case "bkg":
 			JComboBox<String> combo = (JComboBox<String>) e.getSource();
-			middlePanel.setBackgroundImage(combo.getSelectedIndex());
+			int bkgIndex = combo.getSelectedIndex();
+			middlePanel.setBackgroundImage(bkgIndex);
 			if (!loading) {
-				dialogues.dialogues[dialogueIndex].frames.get(currFrame).background = combo.getSelectedIndex();
+				dialogues.dialogues[dialogueIndex].frames.get(currFrame).background = bkgIndex;
 				bottomPanel.table.updateFrame(dialogues.dialogues[dialogueIndex].frames.get(currFrame), currFrame);
 			}
 			break;
@@ -270,15 +270,12 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 		//Load frame information
 		rightPanel.setFrame(selectedFrame);
-		
-		//Set line selection
-		//bottomPanel.lines.setRowSelectionInterval(selectedFrame, selectedFrame);
-		
+
 		loading = false;
 	}
 	
-	private void loadDialogue() {
-		Dialogue currentDialogue = dialogues.dialogues[dialogueIndex];
+	private void loadDialogue(int index) {
+		Dialogue currentDialogue = dialogues.dialogues[index];
 		rightPanel.dialogueId.setText(currentDialogue.name);
 	}
 
@@ -292,7 +289,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			JTextArea tArea = (JTextArea) e.getSource();
 			if (!loading) {
 				String text = tArea.getText();
-				if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
+				if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE &&
+						!(e.isControlDown())) {
 					int pos = tArea.getCaretPosition();
 					String text1 = text.substring(0, pos);
 					String text2 = text.substring(pos);

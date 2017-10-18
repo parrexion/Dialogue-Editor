@@ -19,7 +19,7 @@ public class App {
 	public static DialogueCollection dialogue = null;
 	public static String filepath = "C:\\Users\\Parrexion\\Documents\\2D Prototype - Sense\\Assets\\Resources\\";
 	public static String backgroundFilepath = "C:\\Users\\Parrexion\\Documents\\2D Prototype - Sense\\Assets\\Backgrounds\\";
-	public static String name = "test1b.json";
+	public static String name = "test.json";
 	public static String fullName = "";
 	
     public static void main( String[] args ) {
