@@ -154,16 +154,23 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			position = -1;
 		} 
 		if (position == 4) {
+			middlePanel.setTalkingPerson(position);
+			middlePanel.setTalkingIcon(position);
 			//If it's the extra character in the middle who's speaking.
 			characterName = middlePanel.unknownSpeaker.getText();
 		}
 		else if (indexChar < 0) {
 			//If there is no character to show
 			position = -1;
+			middlePanel.setTalkingPerson(position);
+			middlePanel.setTalkingIcon(position);
+		}
+		else {
+			middlePanel.setTalkingPerson(position);
+			middlePanel.setTalkingIcon(position);
+			characterName = middlePanel.getTalkingCharacter();
 		}
 		
-		middlePanel.setTalkingPerson(position);
-		middlePanel.setTalkingIcon(position);
 		
 		if (loading)
 			return;
@@ -303,7 +310,8 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 			JTextField tField = (JTextField) e.getSource();
 			if (!loading && middlePanel.talkingIndex == 4) {
 				String text = tField.getText();
-				if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE) {
+				if (e.getKeyChar() != KeyEvent.VK_BACK_SPACE &&
+					!(e.isControlDown())) {
 					int pos = tField.getCaretPosition();
 					String text1 = text.substring(0, pos);
 					String text2 = text.substring(pos);

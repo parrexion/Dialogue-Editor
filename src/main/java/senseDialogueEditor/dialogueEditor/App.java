@@ -27,7 +27,7 @@ public class App {
 //    	TemporaryDialogue();
 //    	printFile();
     	
-    	chooseFile();
+//    	chooseFile();
     	readFile();
 
     	new GUI(dialogue);
