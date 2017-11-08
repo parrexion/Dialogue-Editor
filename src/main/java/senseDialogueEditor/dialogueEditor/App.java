@@ -27,14 +27,14 @@ public class App {
 //    	TemporaryDialogue();
 //    	printFile();
     	
-//    	chooseFile();
+    	chooseFile();
     	readFile();
 
     	new GUI(dialogue);
     }
     
     public static void printFile() {
-    	String filename = filepath + name;
+    	String filename = fullName;/*filepath + name;*/
     	Gson gson = new Gson();  
     	String userJson = gson.toJson(dialogue);      	
     	//System.out.println(userJson);
@@ -52,7 +52,7 @@ public class App {
     }
     
     public static void readFile() {
-    	String filename = /*fullName;*/filepath + name;
+    	String filename = fullName;/*filepath + name;*/
     	Gson gson = new Gson();  
     	
     	try (Reader reader = new FileReader(filename)) {
@@ -65,7 +65,7 @@ public class App {
         }
     }
     
-    @SuppressWarnings("unused")
+    //@SuppressWarnings("unused")
 	private static void chooseFile(){
 
     	JFileChooser chooser = new JFileChooser();
