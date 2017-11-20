@@ -15,7 +15,20 @@ public class Persons {
 	public List<Integer> indexList;
 	public HashMap<Integer, String> names;
 	public HashMap<Integer, String> colors;
+
 	
+	/**	All the poses in the game. */
+	public static final String[] defaultPoseNames = {
+			"normal",
+			"sad",
+			"happy",
+			"angry",
+			"dead",
+			"hmm",
+			"pleased",
+			"surprised",
+			"worried"
+			};
 	
 	public Persons(){
 		

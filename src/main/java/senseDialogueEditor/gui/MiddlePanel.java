@@ -137,7 +137,7 @@ public class MiddlePanel extends JPanel {
 			int lastPose = Math.max(0, poseIndex);
 			charPoses.get(position).removeAllItems();
 			if (charPoses.get(position).getItemCount() == 0) {
-				for(String s : persons.personList.get(charIndex).poseNames)
+				for(String s : persons.personList.get(charIndex).getPoseNames())
 					charPoses.get(position).addItem(s);
 			}
 			setCharacterSelection(position, charIndex, lastPose);

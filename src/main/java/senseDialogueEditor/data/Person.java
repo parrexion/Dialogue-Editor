@@ -19,30 +19,20 @@ public class Person {
 	private final String charFolder = "resources/Characters/";
 	private final String poseFolder = "resources/Poses/";
 	
+	private int uuid;
 	public String name;
 	public String charFilePath;
+	public String[] poseNames;
 	public ImageIcon[] poses;
 	public ImageIcon[] closeups;
-	
-	/**	All the poses in the game. */
-	public final String[] poseNames = {
-			"normal",
-			"sad",
-			"happy",
-			"angry",
-			"dead",
-			"hmm",
-			"pleased",
-			"surprised",
-			"worried"
-			};
 	
 	public Person(String name, String charColor) {
 		this.name = name;
 		charFilePath = charFolder + charColor + ".png";
 
-		poses = new ImageIcon[poseNames.length];
-		closeups = new ImageIcon[poseNames.length];
+		poseNames = new String[Persons.defaultPoseNames.length];
+		poses = new ImageIcon[Persons.defaultPoseNames.length];
+		closeups = new ImageIcon[Persons.defaultPoseNames.length];
 		
 		try {
 			final BufferedImage imgColor = ImageIO.read(new File(charFilePath));
@@ -50,8 +40,9 @@ public class Person {
 			BufferedImage paintedImage;
 			Graphics2D g2d;
 			
-			for (int i = 0; i < poseNames.length; i++) {
-				poseImage = ImageIO.read(new File(poseFolder + poseNames[i] + ".png"));
+			for (int i = 0; i < Persons.defaultPoseNames.length; i++) {
+				poseNames[i] = Persons.defaultPoseNames[i];
+				poseImage = ImageIO.read(new File(poseFolder + Persons.defaultPoseNames[i] + ".png"));
 				paintedImage = new BufferedImage(imgColor.getWidth(), imgColor.getHeight(), BufferedImage.TYPE_INT_ARGB);
 				
 				g2d = paintedImage.createGraphics();
@@ -66,5 +57,9 @@ public class Person {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String[] getPoseNames(){
+		return Persons.defaultPoseNames;
 	}
 }
