@@ -1,4 +1,4 @@
-package senseDialogueEditor.dialogueEditor;
+package senseDialogueEditor.data;
 
 import java.util.Arrays;
 

@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import senseDialogueEditor.dialogueEditor.DialogueCollection;
+import senseDialogueEditor.data.DialogueCollection;
 
 public class DialogueListPanel extends JPanel implements KeyListener {
 

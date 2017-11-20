@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import senseDialogueEditor.dialogueEditor.Dialogue;
-import senseDialogueEditor.dialogueEditor.Frame;
+import senseDialogueEditor.data.Dialogue;
+import senseDialogueEditor.data.Frame;
 
 public class FrameLineTable extends AbstractTableModel{
 

@@ -11,7 +11,9 @@ import javax.swing.filechooser.FileFilter;
 
 import com.google.gson.Gson;
 
-import senseDialogueEditor.gui.GUI;
+import senseDialogueEditor.data.Dialogue;
+import senseDialogueEditor.data.DialogueCollection;
+import senseDialogueEditor.data.Frame;
 
 
 public class App {
@@ -30,7 +32,7 @@ public class App {
     	chooseFile();
     	readFile();
 
-    	new GUI(dialogue);
+    	new EditorTabber(dialogue);
     }
     
     public static void printFile() {

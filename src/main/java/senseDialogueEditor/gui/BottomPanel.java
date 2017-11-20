@@ -19,8 +19,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import senseDialogueEditor.dialogueEditor.Dialogue;
-import senseDialogueEditor.dialogueEditor.Frame;
+import senseDialogueEditor.data.Dialogue;
+import senseDialogueEditor.data.Frame;
 import senseDialogueEditor.extra.SmartScroller;
 
 /**

@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -15,11 +14,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import senseDialogueEditor.data.Backgrounds;
+import senseDialogueEditor.data.Dialogue;
+import senseDialogueEditor.data.DialogueCollection;
+import senseDialogueEditor.data.Frame;
 import senseDialogueEditor.data.Persons;
 import senseDialogueEditor.dialogueEditor.App;
-import senseDialogueEditor.dialogueEditor.DialogueCollection;
-import senseDialogueEditor.dialogueEditor.Dialogue;
-import senseDialogueEditor.dialogueEditor.Frame;
 
 public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
@@ -28,7 +27,7 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 	public static boolean loading = false;
 
-	private JFrame frame;
+	public JPanel tabPanel;
 	private JPanel mainPanel;
 	private JPanel sidePanel;
 	private BottomPanel bottomPanel;
@@ -43,9 +42,6 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 
 		dialogueIndex = 0;
 
-		frame = new JFrame("Dialogue Editor");
-		frame.setLayout(new BorderLayout());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.dialogues = dialogues;
 
 		// System.out.println(lines.dataList.length);
@@ -66,11 +62,11 @@ public class GUI implements ActionListener, KeyListener, ListSelectionListener {
 		loadDialogue(dialogueIndex);
 		bottomPanel.lines.setRowSelectionInterval(rightPanel.frameNr, rightPanel.frameNr);
 
-		frame.add(mainPanel, BorderLayout.CENTER);
-		frame.add(bottomPanel, BorderLayout.SOUTH);
-		frame.add(sidePanel, BorderLayout.EAST);
-		frame.pack();
-		frame.setVisible(true);
+		tabPanel = new JPanel();
+		tabPanel.setLayout(new BorderLayout());
+		tabPanel.add(mainPanel, BorderLayout.CENTER);
+		tabPanel.add(bottomPanel, BorderLayout.SOUTH);
+		tabPanel.add(sidePanel, BorderLayout.EAST);
 	}
 
 	/**

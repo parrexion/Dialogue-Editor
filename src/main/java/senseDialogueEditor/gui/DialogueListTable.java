@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import senseDialogueEditor.dialogueEditor.DialogueCollection;
-import senseDialogueEditor.dialogueEditor.Dialogue;
+import senseDialogueEditor.data.Dialogue;
+import senseDialogueEditor.data.DialogueCollection;
 
 public class DialogueListTable extends AbstractTableModel{
 
